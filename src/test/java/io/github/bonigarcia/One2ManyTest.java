@@ -26,7 +26,6 @@ import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
 
 import java.awt.AWTException;
 import java.awt.Robot;
-import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
@@ -49,7 +48,6 @@ import org.kurento.test.config.BrowserConfig;
 import org.kurento.test.config.BrowserScope;
 import org.kurento.test.config.TestScenario;
 import org.openqa.selenium.By;
-import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
@@ -93,29 +91,20 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         }
 
         // Place browsers
-        java.awt.Dimension screenSize = Toolkit.getDefaultToolkit()
-                .getScreenSize();
-        int width = (int) screenSize.getWidth() / 2;
-        int height = (int) screenSize.getHeight();
-        Dimension dimension = new Dimension(width, height);
+        int width = getPresenter().getBrowser().getWebDriver().manage().window()
+                .getSize().getWidth();
         Point origin = new Point(0, 0);
-        Point middle = new Point(width, 0);
-
-        getPresenter().getBrowser().getWebDriver().manage().window()
-                .setSize(dimension);
+        Point shift = new Point(width, 0);
         getPresenter().getBrowser().getWebDriver().manage().window()
                 .setPosition(origin);
         getViewer().getBrowser().getWebDriver().manage().window()
-                .setSize(dimension);
-        getViewer().getBrowser().getWebDriver().manage().window()
-                .setPosition(middle);
+                .setPosition(shift);
     }
 
     @Test
     public void test() throws Exception {
         // Sync presenter and viewer time
-        log.info(
-                "Starting test. Synchronizing presenter and viewer ... please wait");
+        log.info("Synchronizing presenter and viewer ... please wait");
         WebPage[] browsers = { getPresenter(), getViewer() };
         String[] videoTags = { "video", "video" };
         String[] peerConnections = { "webRtcPeer.peerConnection",
@@ -124,6 +113,7 @@ public class One2ManyTest extends BrowserTest<WebPage> {
 
         getPresenter().getBrowser().getWebDriver()
                 .findElement(By.id("presenter")).click();
+        log.info("Starting presenter");
         getPresenter().subscribeEvent("video", "playing");
         getPresenter().waitForEvent("playing");
 
@@ -155,6 +145,7 @@ public class One2ManyTest extends BrowserTest<WebPage> {
 
                         // Click on viewer button
                         viewerDriver.findElement(By.id("viewer")).click();
+                        log.info("Starting viewer #{}", index);
 
                         if (index == 0) {
                             getViewer().subscribeEvent("video", "playing");
@@ -177,6 +168,9 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         }
         allTabsLatch.await();
 
+        log.info(
+                "All viewers (numViewers) are connected to presenter ... now waiting {} seconds",
+                sessionTime);
         waitSeconds(sessionTime);
 
         executor.shutdown();
@@ -193,6 +187,10 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         log.debug("presenterMap size {}", presenterMap.size());
         log.debug("viewerMap size {}", viewerMap.size());
 
+        log.info("Closing browsers");
+        getPresenter().close();
+        getViewer().close();
+
     }
 
     private void setFocusOnViewerFirstTab(WebDriver viewerDriver) {
@@ -202,8 +200,6 @@ public class One2ManyTest extends BrowserTest<WebPage> {
     }
 
     private void openNewTab(WebDriver driver, int index) {
-        log.debug("Openning viewer {} in new tab", index);
-
         // Send control-t to the GUI
         sendControlT();
 
@@ -233,6 +229,8 @@ public class One2ManyTest extends BrowserTest<WebPage> {
     @After
     public void writeCsv() throws Exception {
         if (presenterMap != null && viewerMap != null) {
+            log.info("Calculating end-to-end latency using Tessaract OCR..."
+                    + " this process can last some minutes, please wait");
             Table<Integer, Integer, String> csvTable = processOcrAndStats(
                     presenterMap, viewerMap);
             String outputCsvFile = outputFolder
