@@ -1,0 +1,48 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>io.github.bonigarcia</groupId>
+	<artifactId>webrtc-one2many-test</artifactId>
+	<version>1.0.0</version>
+
+	<parent>
+		<groupId>org.kurento</groupId>
+		<artifactId>kurento-parent-pom</artifactId>
+		<version>6.6.2-SNAPSHOT</version>
+	</parent>
+
+	<properties>
+		<slf4j.version>1.7.12</slf4j.version>
+
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+
+		<maven.compiler.argument.target>${maven.compiler.target}</maven.compiler.argument.target>
+		<maven.compiler.argument.source>${maven.compiler.source}</maven.compiler.argument.source>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>org.kurento</groupId>
+			<artifactId>kurento-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<repository>
+			<id>kurento-snapshots</id>
+			<name>Kurento Snapshot Repository</name>
+			<url>http://maven.kurento.org/snapshots/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+</project>
