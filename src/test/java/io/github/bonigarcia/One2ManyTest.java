@@ -145,7 +145,7 @@ public class One2ManyTest extends BrowserTest<WebPage> {
 
                         // Click on viewer button
                         viewerDriver.findElement(By.id("viewer")).click();
-                        log.info("Starting viewer #{}", index);
+                        log.info("Starting viewer #{}", (index + 1));
 
                         if (index == 0) {
                             getViewer().subscribeEvent("video", "playing");
@@ -169,8 +169,8 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         allTabsLatch.await();
 
         log.info(
-                "All viewers (numViewers) are connected to presenter ... now waiting {} seconds",
-                sessionTime);
+                "All viewers ({}) are connected to presenter ... now waiting {} seconds",
+                numViewers, sessionTime);
         waitSeconds(sessionTime);
 
         executor.shutdown();
