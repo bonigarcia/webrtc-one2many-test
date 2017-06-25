@@ -16,8 +16,13 @@
  */
 package io.github.bonigarcia;
 
+import static io.github.bonigarcia.Configuration.appUrl;
+import static io.github.bonigarcia.Configuration.newTabTimeout;
+import static io.github.bonigarcia.Configuration.numViewers;
+import static io.github.bonigarcia.Configuration.outputFolder;
+import static io.github.bonigarcia.Configuration.sessionTime;
+import static io.github.bonigarcia.Configuration.viewersRate;
 import static org.apache.commons.lang3.SystemUtils.IS_OS_MAC;
-import static org.kurento.commons.PropertiesManager.getProperty;
 
 import java.awt.AWTException;
 import java.awt.Robot;
@@ -64,30 +69,6 @@ import com.google.common.collect.Table;
 public class One2ManyTest extends BrowserTest<WebPage> {
 
     private final Logger log = LoggerFactory.getLogger(One2ManyTest.class);
-
-    public static final String APP_URL_PROP = "app.url";
-    public static final String APP_URL_DEFAULT = "https://kurento.lab.fiware.org:8083/";
-    public static final String NUM_VIEWERS_PROP = "num.viewers";
-    public static final int NUM_VIEWERS_DEFAULT = 5;
-    public static final String VIEWERS_RATE_PROP = "viewers.rate";
-    public static final int VIEWERS_RATE_DEFAULT = 1000; // ms
-    public static final String SESSION_TIME_PROP = "session.time";
-    public static final int SESSION_TIME_DEFAULT = 5; // seconds
-    public static final String OUTPUT_FOLDER_PROP = "output.folder";
-    public static final String OUTPUT_FOLDER_DEFAULT = ".";
-    public static final String NEW_TAB_TIMEOUT_PROP = "tab.timeout";
-    public static final int NEW_TAB_TIMEOUT_DEFAULT = 10; // seconds
-
-    public static String appUrl = getProperty(APP_URL_PROP, APP_URL_DEFAULT);
-    public int numViewers = getProperty(NUM_VIEWERS_PROP, NUM_VIEWERS_DEFAULT);
-    public int viewersRate = getProperty(VIEWERS_RATE_PROP,
-            VIEWERS_RATE_DEFAULT);
-    public int sessionTime = getProperty(SESSION_TIME_PROP,
-            SESSION_TIME_DEFAULT);
-    public String outputFolder = getProperty(OUTPUT_FOLDER_PROP,
-            OUTPUT_FOLDER_DEFAULT);
-    public int newTabTimeout = getProperty(NEW_TAB_TIMEOUT_PROP,
-            NEW_TAB_TIMEOUT_DEFAULT);
 
     private Robot robot;
     public Table<Integer, Integer, String> csvTable = null;
@@ -160,7 +141,7 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         for (int i = 0; i < numViewers; i++) {
             final CountDownLatch oneTabLatch = new CountDownLatch(1);
             if (i != 0) {
-                waitMilliSeconds(viewersRate);
+                waitSeconds(viewersRate);
             }
 
             final int index = i;

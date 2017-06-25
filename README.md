@@ -8,8 +8,8 @@ Thisbenchmark is aimed to assess the performance of WebRTC broadcasting applicat
 | Parameter                   | Default Value                         | Description                                           |
 |-----------------------------|---------------------------------------|-------------------------------------------------------|
 | app.url                     | https://kurento.lab.fiware.org:8083/  | System Under Test (SUT) URL                           |
-| num.viewers                 | 5                                     | Number of viewers                                     |
-| viewers.rate                | 1000                                  | Rate of new viewer incoming (in milliseconds)         |
+| num.viewers                 | 10                                    | Number of viewers                                     |
+| viewers.rate                | 5                                     | Rate of new viewer incoming (in seconds)              |
 | session.time                | 5                                     | Time (in seconds) in which all viewers are active     |
 | output.folder               | .                                     | Folder in which the CSV result of the test is stored  |
 | tab.timeout                 | 10                                    | Timeout (in seconds) to wait loading a new tab        |
