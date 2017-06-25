@@ -19,7 +19,7 @@ package io.github.bonigarcia;
 import static org.kurento.commons.PropertiesManager.getProperty;
 
 /**
- * Calculate average formula.
+ * Configuration.
  *
  * @author Boni Garcia (boni.garcia@urjc.es)
  * @since 1.0.0
