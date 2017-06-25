@@ -126,13 +126,6 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         // Open a new tab for every new viewer
         long timeInit = 0, timeTab = 0, timeWait = 0;
         for (int i = 0; i < numViewers; i++) {
-            if (i != 0) {
-                timeWait = timeTab > TimeUnit.SECONDS.toMillis(viewersRate) ? 0
-                        : TimeUnit.SECONDS.toMillis(viewersRate) - timeTab;
-                log.debug("Waiting {} ms (timeTab={} ms)", timeWait, timeTab);
-                waitMilliSeconds(timeWait);
-            }
-
             try {
                 timeInit = System.currentTimeMillis();
                 log.info("Starting viewer #{}", (i + 1));
@@ -153,15 +146,17 @@ public class One2ManyTest extends BrowserTest<WebPage> {
                 }
 
             } catch (Exception e) {
-                log.error("Exception in session {}", i, e);
+                log.error("Exception in viewer {}", (i + 1), e);
             } finally {
                 timeTab = System.currentTimeMillis() - timeInit;
+                timeWait = timeTab > TimeUnit.SECONDS.toMillis(viewersRate) ? 0
+                        : TimeUnit.SECONDS.toMillis(viewersRate) - timeTab;
+                log.debug("Waiting {} ms (timeTab={} ms)", timeWait, timeTab);
+                waitMilliSeconds(timeWait);
             }
         }
 
-        log.info(
-                "All viewers ({}) are connected to presenter ... now waiting {} seconds",
-                numViewers, sessionTime);
+        log.info("All viewers connected, now waiting {} seconds", sessionTime);
         waitSeconds(sessionTime);
 
         // Get OCR results and statistics
