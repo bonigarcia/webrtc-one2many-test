@@ -213,8 +213,7 @@ public class One2ManyTest extends BrowserTest<WebPage> {
     @After
     public void writeCsv() throws Exception {
         if (presenterMap != null && viewerMap != null) {
-            log.info("Calculating end-to-end latency using Tessaract OCR..."
-                    + " this process can last some minutes, please wait");
+            log.info("Calculating E2E latency with Tesseract OCR, please wait");
             Table<Integer, Integer, String> csvTable = processOcrAndStats(
                     presenterMap, viewerMap);
             String outputCsvFile = outputFolder
