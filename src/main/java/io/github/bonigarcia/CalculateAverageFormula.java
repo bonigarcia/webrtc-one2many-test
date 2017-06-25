@@ -17,6 +17,8 @@
 package io.github.bonigarcia;
 
 import static io.github.bonigarcia.Configuration.viewersRate;
+import static io.github.bonigarcia.Configuration.numViewers;
+import static io.github.bonigarcia.Configuration.sessionTime;
 
 /**
  * Calculate average formula.
@@ -27,7 +29,7 @@ import static io.github.bonigarcia.Configuration.viewersRate;
 public class CalculateAverageFormula {
 
     public static void main(String[] args) {
-        int totalTime = 182;
+        int totalTime = viewersRate * numViewers + sessionTime;
         int numSamples = totalTime / viewersRate;
 
         String formula = "=AVERAGE(A%d:A%d)";
@@ -37,7 +39,6 @@ public class CalculateAverageFormula {
             y = x + viewersRate - 1;
             System.out.println(String.format(formula, x, y, x, y));
         }
-
     }
 
 }

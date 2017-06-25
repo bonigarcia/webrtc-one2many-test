@@ -31,7 +31,7 @@ public class Configuration {
     public static final String NUM_VIEWERS_PROP = "num.viewers";
     public static final int NUM_VIEWERS_DEFAULT = 10;
     public static final String VIEWERS_RATE_PROP = "viewers.rate";
-    public static final int VIEWERS_RATE_DEFAULT = 2; // seconds
+    public static final int VIEWERS_RATE_DEFAULT = 5; // seconds
     public static final String SESSION_TIME_PROP = "session.time";
     public static final int SESSION_TIME_DEFAULT = 5; // seconds
     public static final String OUTPUT_FOLDER_PROP = "output.folder";

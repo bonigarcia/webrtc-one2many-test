@@ -29,7 +29,6 @@ import java.awt.Robot;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -71,7 +70,8 @@ public class One2ManyTest extends BrowserTest<WebPage> {
     private final Logger log = LoggerFactory.getLogger(One2ManyTest.class);
 
     private Robot robot;
-    public Table<Integer, Integer, String> csvTable = null;
+    private Map<String, Map<String, Object>> presenterMap;
+    private Map<String, Map<String, Object>> viewerMap;
 
     @Parameters(name = "{index}: {0}")
     public static Collection<Object[]> data() {
@@ -187,14 +187,11 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         getPresenter().endOcr();
         getViewer().endOcr();
 
-        Map<String, Map<String, Object>> presenterMap = getPresenter()
-                .getOcrMap();
-        Map<String, Map<String, Object>> viewerMap = getViewer().getOcrMap();
+        presenterMap = getPresenter().getOcrMap();
+        viewerMap = getViewer().getOcrMap();
 
         log.debug("presenterMap size {}", presenterMap.size());
         log.debug("viewerMap size {}", viewerMap.size());
-
-        csvTable = processOcrAndStats(presenterMap, viewerMap);
 
     }
 
@@ -234,8 +231,10 @@ public class One2ManyTest extends BrowserTest<WebPage> {
     }
 
     @After
-    public void writeCsv() throws IOException {
-        if (csvTable != null) {
+    public void writeCsv() throws Exception {
+        if (presenterMap != null && viewerMap != null) {
+            Table<Integer, Integer, String> csvTable = processOcrAndStats(
+                    presenterMap, viewerMap);
             String outputCsvFile = outputFolder
                     + this.getClass().getSimpleName() + ".csv";
             log.info("End of test, writing results in {}", outputCsvFile);

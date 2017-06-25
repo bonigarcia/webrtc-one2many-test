@@ -3,7 +3,7 @@ Copyright © 2017 [Boni Garcia]. Licensed under [Apache 2.0 License].
 webrtc-one2many-test
 ====================
 
-Thisbenchmark is aimed to assess the performance of WebRTC broadcasting application (one-to-many). To that aim, this repository is shipped with an **JUnit test**. This test uses the features provided by the Kurento Testing Framework (*kurento-test* Maven dependency). This test is configurable. The following table provides a summary of the configuration parameters:
+This benchmark is aimed to assess the performance of WebRTC broadcasting application (one-to-many). To that aim, this repository is shipped with an **JUnit test**. This test uses the features provided by the Kurento Testing Framework (*kurento-test* Maven dependency). This test is configurable. The following table provides a summary of the configuration parameters:
 
 | Parameter                   | Default Value                         | Description                                           |
 |-----------------------------|---------------------------------------|-------------------------------------------------------|
