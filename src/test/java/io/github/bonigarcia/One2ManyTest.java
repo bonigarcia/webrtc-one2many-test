@@ -32,9 +32,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Map;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -126,54 +124,45 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         setFocusOnViewerFirstTab(viewerDriver);
 
         // Open a new tab for every new viewer
-        final CountDownLatch allTabsLatch = new CountDownLatch(numViewers);
-        ExecutorService executor = Executors.newFixedThreadPool(numViewers);
+        long timeInit = 0, timeTab = 0, timeWait = 0;
         for (int i = 0; i < numViewers; i++) {
-            final CountDownLatch oneTabLatch = new CountDownLatch(1);
             if (i != 0) {
-                waitSeconds(viewersRate);
+                timeWait = timeTab > TimeUnit.SECONDS.toMillis(viewersRate) ? 0
+                        : TimeUnit.SECONDS.toMillis(viewersRate) - timeTab;
+                log.debug("Waiting {} ms (timeTab={} ms)", timeWait, timeTab);
+                waitMilliSeconds(timeWait);
             }
 
-            final int index = i;
-            executor.execute(new Runnable() {
-                @Override
-                public void run() {
-                    try {
-                        if (index != 0) {
-                            openNewTab(viewerDriver, index);
-                        }
-
-                        // Click on viewer button
-                        viewerDriver.findElement(By.id("viewer")).click();
-                        log.info("Starting viewer #{}", (index + 1));
-
-                        if (index == 0) {
-                            getViewer().subscribeEvent("video", "playing");
-                            getViewer().waitForEvent("playing");
-
-                            // OCR for E2E latency
-                            getPresenter().startOcr();
-                            getViewer().startOcr();
-                        }
-
-                    } catch (Exception e) {
-                        log.error("Exception in session {}", index, e);
-                    } finally {
-                        oneTabLatch.countDown();
-                        allTabsLatch.countDown();
-                    }
+            try {
+                timeInit = System.currentTimeMillis();
+                log.info("Starting viewer #{}", (i + 1));
+                if (i != 0) {
+                    openNewTab(viewerDriver, i);
                 }
-            });
-            oneTabLatch.await();
+
+                // Click on viewer button
+                viewerDriver.findElement(By.id("viewer")).click();
+
+                if (i == 0) {
+                    getViewer().subscribeEvent("video", "playing");
+                    getViewer().waitForEvent("playing");
+
+                    // OCR for E2E latency
+                    getPresenter().startOcr();
+                    getViewer().startOcr();
+                }
+
+            } catch (Exception e) {
+                log.error("Exception in session {}", i, e);
+            } finally {
+                timeTab = System.currentTimeMillis() - timeInit;
+            }
         }
-        allTabsLatch.await();
 
         log.info(
                 "All viewers ({}) are connected to presenter ... now waiting {} seconds",
                 numViewers, sessionTime);
         waitSeconds(sessionTime);
-
-        executor.shutdown();
 
         // Get OCR results and statistics
         setFocusOnViewerFirstTab(viewerDriver);
