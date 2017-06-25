@@ -105,8 +105,7 @@ public class One2ManyTest extends BrowserTest<WebPage> {
         log.info("Synchronizing presenter and viewer ... please wait");
         WebPage[] browsers = { getPresenter(), getViewer() };
         String[] videoTags = { "video", "video" };
-        String[] peerConnections = { "webRtcPeer.peerConnection",
-                "webRtcPeer.peerConnection" };
+        String[] peerConnections = { "", "" };
         syncTimeForOcr(browsers, videoTags, peerConnections);
 
         getPresenter().getBrowser().getWebDriver()
